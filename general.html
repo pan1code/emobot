@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>emo-bot</title>
+
+    <link href="style.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/@vladmandic/human/dist/human.js" defer></script>
+    <script src="scripts.js" defer></script>
+</head>
+
+<body>
+
+    <header>
+        <a class="brand" href="#">emo-bot</a>
+
+        <nav aria-label="Основная навигация">
+            <a href="">главная</a>
+            <a href="">профиль</a>
+            <a href="">pick me</a>
+        </nav>
+
+        <div class="theme-switcher" aria-label="Выбор темы">
+            <button class="theme-button is-active" data-theme="apple" type="button">Apple</button>
+            <button class="theme-button" data-theme="web20" type="button">Web 2.0</button>
+            <button class="theme-button" data-theme="emo" type="button">Emo</button>
+        </div>
+    </header>
+
+    <main>
+        <section class="hero" aria-labelledby="page-title">
+            <div class="intro">
+                <p class="eyebrow">camera emotion interface</p>
+                <h1 id="page-title">Эмоции с камеры, прямо на экране.</h1>
+                <p>Включи доступ к камере, и emo-bot будет показывать настроение в нижней плашке.</p>
+            </div>
+
+            <section class="camera-block" aria-label="Камера распознавания эмоций">
+                <div class="camera-shell">
+                    <video id="camera" autoplay muted playsinline></video>
+                    <div class="camera-status" id="cameraStatus">запрашиваю камеру</div>
+                </div>
+
+                <div class="emotion-panel" aria-live="polite" aria-label="График эмоций">
+                    <div class="emotion-chart">
+                        <div class="emotion-bar" data-emotion="sad">
+                            <div class="bar-track">
+                                <div class="bar-fill" id="sadBar"></div>
+                            </div>
+                            <span>sad</span>
+                            <small id="sadScore">0%</small>
+                        </div>
+                        <div class="emotion-bar" data-emotion="happy">
+                            <div class="bar-track">
+                                <div class="bar-fill" id="happyBar"></div>
+                            </div>
+                            <span>happy</span>
+                            <small id="happyScore">0%</small>
+                        </div>
+                        <div class="emotion-bar" data-emotion="angry">
+                            <div class="bar-track">
+                                <div class="bar-fill" id="angryBar"></div>
+                            </div>
+                            <span>angry</span>
+                            <small id="angryScore">0%</small>
+                        </div>
+                        <div class="emotion-bar is-active" data-emotion="calm">
+                            <div class="bar-track">
+                                <div class="bar-fill" id="calmBar"></div>
+                            </div>
+                            <span>спокоен</span>
+                            <small id="calmScore">100%</small>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </section>
+    </main>
+
+    <footer>
+        <p>москва 2026. Финашка</p>
+    </footer>
+
+</body>
+</html>
