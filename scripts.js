@@ -1,5 +1,7 @@
 const video = document.getElementById("camera");
 const cameraStatus = document.getElementById("cameraStatus");
+const themeMenu = document.getElementById("themeMenu");
+const themeMenuButton = document.getElementById("themeMenuButton");
 const themeButtons = [...document.querySelectorAll(".theme-button")];
 
 const emotionMap = {
@@ -210,21 +212,51 @@ function normalizeScores(scores) {
 }
 
 function setTheme(themeName) {
-    const themes = ["apple", "web20", "emo"];
+    const themes = ["apple", "web20", "emo", "macos", "rus"];
     const nextTheme = themes.includes(themeName) ? themeName : "apple";
 
     document.body.classList.toggle("theme-web20", nextTheme === "web20");
     document.body.classList.toggle("theme-emo", nextTheme === "emo");
+    document.body.classList.toggle("theme-macos", nextTheme === "macos");
+    document.body.classList.toggle("theme-rus", nextTheme === "rus");
     themeButtons.forEach((button) => {
         button.classList.toggle("is-active", button.dataset.theme === nextTheme);
     });
     localStorage.setItem("emoBotTheme", nextTheme);
 }
 
+function setThemeMenu(open) {
+    themeMenu.hidden = !open;
+    themeMenuButton.setAttribute("aria-expanded", String(open));
+}
+
+themeMenuButton.addEventListener("click", () => {
+    setThemeMenu(themeMenu.hidden);
+});
+
 themeButtons.forEach((button) => {
     button.addEventListener("click", () => {
         setTheme(button.dataset.theme);
+        setThemeMenu(false);
     });
+});
+
+document.addEventListener("click", (event) => {
+    if (
+        themeMenu.hidden ||
+        themeMenu.contains(event.target) ||
+        themeMenuButton.contains(event.target)
+    ) {
+        return;
+    }
+
+    setThemeMenu(false);
+});
+
+document.addEventListener("keydown", (event) => {
+    if (event.key === "Escape") {
+        setThemeMenu(false);
+    }
 });
 
 setTheme(localStorage.getItem("emoBotTheme"));

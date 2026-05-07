@@ -21,4 +21,6 @@ THEMES = {
     "apple": "Apple",
     "web20": "Web 2.0",
     "emo": "Emo",
+    "macos": "Mac OS",
+    "rus": "Rus",
 }
