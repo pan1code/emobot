@@ -12,7 +12,7 @@ EMOTIONS = {
         "color": "#ff2e63",
     },
     "calm": {
-        "title": "спокоен",
+        "title": "neural",
         "color": "#7d7aff",
     },
 }
