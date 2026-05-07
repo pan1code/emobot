@@ -2,7 +2,7 @@
 
 Бот распознавания эмоций с видеопотока в режиме реального времени.
 
-Browser camera page that shows a live emotion chart and lets you switch between Apple, Web 2.0, and Emo visual themes.
+Browser camera page that shows a live emotion chart 
 
 ## Run
 
