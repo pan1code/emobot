@@ -11,13 +11,15 @@ EMOTIONS = {
     "sad": {"title": "sad", "color": "#5e7ce2"},
     "happy": {"title": "happy", "color": "#34c759"},
     "angry": {"title": "angry", "color": "#ff3b30"},
-    "calm": {"title": "calm", "color": "#00a7c8"},
+    "calm": {"title": "neutral", "color": "#00a7c8"},
 }
 
 THEMES = {
-    "apple": "Apple",
+    "apple": "Eco",
     "web20": "Web 2.0",
-    "emo": "Emo",
+    "emo": "Purple-Black",
+    "macos": "Macintosh",
+    "rus": "Rus",
 }
 
 

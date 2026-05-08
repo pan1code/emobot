@@ -19,13 +19,15 @@
         <nav aria-label="Основная навигация">
             <a href="">главная</a>
             <a href="">профиль</a>
-            <a href="">pick me</a>
+            <button class="theme-menu-button" id="themeMenuButton" type="button" aria-expanded="false" aria-controls="themeMenu">темы</button>
         </nav>
 
-        <div class="theme-switcher" aria-label="Выбор темы">
-            <button class="theme-button is-active" data-theme="apple" type="button">Apple</button>
+        <div class="theme-menu" id="themeMenu" aria-label="Выбор темы" hidden>
+            <button class="theme-button is-active" data-theme="apple" type="button">Eco</button>
             <button class="theme-button" data-theme="web20" type="button">Web 2.0</button>
-            <button class="theme-button" data-theme="emo" type="button">Emo</button>
+            <button class="theme-button" data-theme="emo" type="button">Purple-Black</button>
+            <button class="theme-button" data-theme="macos" type="button">Macintosh</button>
+            <button class="theme-button" data-theme="rus" type="button">Rus</button>
         </div>
     </header>
 
@@ -71,7 +73,7 @@
                             <div class="bar-track">
                                 <div class="bar-fill" id="calmBar"></div>
                             </div>
-                            <span>спокоен</span>
+                            <span>neural</span>
                             <small id="calmScore">100%</small>
                         </div>
                     </div>
@@ -81,8 +83,14 @@
     </main>
 
     <footer>
-        <p>москва 2026. Финашка</p>
+        <p>Москва 2026. Финашка.</p>
     </footer>
+
+    <div class="rus-loader" aria-hidden="true">
+        <div class="rus-loader-box">
+            <div class="rus-spinner"></div>
+        </div>
+    </div>
 
 </body>
 </html>
