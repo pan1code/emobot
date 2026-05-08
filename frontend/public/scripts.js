@@ -1,4 +1,10 @@
+const API_BASE = window.EMOBOT_API_BASE || getApiBase();
+const HUMAN_INTERVAL_MS = 650;
+const PYTHON_INTERVAL_MS = 1400;
+const VIDEO_WAIT_MS = 800;
+
 const video = document.getElementById("camera");
+const snapshot = document.getElementById("snapshot");
 const cameraStatus = document.getElementById("cameraStatus");
 const themeButtons = [...document.querySelectorAll(".theme-button")];
 
@@ -6,36 +12,41 @@ const emotionMap = {
     sad: {
         label: document.querySelector('[data-emotion="sad"] span'),
         score: document.getElementById("sadScore"),
-        bar: document.getElementById("sadBar"),
-        names: ["sad", "sadness"]
+        bar: document.getElementById("sadBar")
     },
     happy: {
         label: document.querySelector('[data-emotion="happy"] span'),
         score: document.getElementById("happyScore"),
-        bar: document.getElementById("happyBar"),
-        names: ["happy", "joy"]
+        bar: document.getElementById("happyBar")
     },
     angry: {
         label: document.querySelector('[data-emotion="angry"] span'),
         score: document.getElementById("angryScore"),
-        bar: document.getElementById("angryBar"),
-        names: ["angry", "anger"]
+        bar: document.getElementById("angryBar")
     },
     calm: {
         label: document.querySelector('[data-emotion="calm"] span'),
         score: document.getElementById("calmScore"),
-        bar: document.getElementById("calmBar"),
-        names: ["neutral", "calm", "relaxed"]
+        bar: document.getElementById("calmBar")
     }
 };
 
 const emotionBars = [...document.querySelectorAll(".emotion-bar")];
-let human;
 let analyzing = false;
+let human;
+let useHumanModel = false;
+
+function getApiBase() {
+    if (["3000", "5173"].includes(window.location.port)) {
+        return `${window.location.protocol}//${window.location.hostname}:8000`;
+    }
+
+    return window.location.origin;
+}
 
 async function loadPythonConfig() {
     try {
-        const response = await fetch("/api/config");
+        const response = await fetch(`${API_BASE}/api/config`);
         if (!response.ok) return;
 
         const config = await response.json();
@@ -68,9 +79,7 @@ function applyPythonConfig(config) {
 }
 
 async function startCamera() {
-
     try {
-
         const stream = await navigator.mediaDevices.getUserMedia({
             video: true,
             audio: false
@@ -79,21 +88,17 @@ async function startCamera() {
         video.srcObject = stream;
         cameraStatus.textContent = "камера включена";
         await video.play();
-        await startEmotionModel();
-
+        await startHumanModel();
+        analyzeEmotion();
     } catch (error) {
-
         console.log("Ошибка камеры:", error);
         cameraStatus.textContent = "камера недоступна";
-
     }
-
 }
 
-async function startEmotionModel() {
+async function startHumanModel() {
     if (!window.Human) {
-        cameraStatus.textContent = "модель эмоций не загрузилась";
-        updateEmotionPanel({ calm: 1 });
+        cameraStatus.textContent = "модель в браузере недоступна";
         return;
     }
 
@@ -116,46 +121,89 @@ async function startEmotionModel() {
         gesture: { enabled: false }
     });
 
-    cameraStatus.textContent = "загружаю модель эмоций";
-
     try {
+        cameraStatus.textContent = "загружаю модель эмоций";
         await human.load();
         await human.warmup();
+        useHumanModel = true;
         cameraStatus.textContent = "анализирую лицо";
-        analyzeEmotion();
     } catch (error) {
-        console.log("Ошибка модели эмоций:", error);
-        cameraStatus.textContent = "модель недоступна, показываю спокойное";
-        updateEmotionPanel({ calm: 1 });
+        console.log("Ошибка Human.js:", error);
+        cameraStatus.textContent = "браузерная модель недоступна, использую Python";
     }
 }
 
 async function analyzeEmotion() {
-    if (!human || analyzing) return;
+    if (analyzing || !video.videoWidth) {
+        setTimeout(analyzeEmotion, VIDEO_WAIT_MS);
+        return;
+    }
 
     analyzing = true;
 
     try {
-        const result = await human.detect(video);
-        const face = result.face && result.face[0];
+        const result = useHumanModel
+            ? await analyzeWithHuman()
+            : await analyzeWithPython();
 
-        if (!face) {
-            cameraStatus.textContent = "лицо не найдено";
-            updateEmotionPanel({ calm: 1 });
-        } else {
-            cameraStatus.textContent = "анализирую лицо";
-            updateEmotionPanel(readEmotions(face.emotion));
-        }
+        updateEmotionPanel(result.scores);
+        cameraStatus.textContent = result.faceFound === false
+            ? "лицо не найдено"
+            : `эмоция: ${result.emotion}`;
     } catch (error) {
         console.log("Ошибка анализа эмоций:", error);
-        cameraStatus.textContent = "ошибка анализа";
+        cameraStatus.textContent = "backend или ml-service недоступен";
+        updateEmotionPanel({ calm: 1 });
     } finally {
         analyzing = false;
-        setTimeout(analyzeEmotion, 550);
+        setTimeout(analyzeEmotion, useHumanModel ? HUMAN_INTERVAL_MS : PYTHON_INTERVAL_MS);
     }
 }
 
-function readEmotions(rawEmotions = []) {
+async function analyzeWithHuman() {
+    const detection = await human.detect(video);
+    const face = detection.face && detection.face[0];
+
+    if (!face) {
+        const scores = { calm: 1 };
+        await saveScores(scores);
+        return { emotion: "calm", scores, faceFound: false };
+    }
+
+    const scores = readHumanEmotions(face.emotion);
+    return await saveScores(scores);
+}
+
+async function analyzeWithPython() {
+    const image = captureFrame();
+    const response = await fetch(`${API_BASE}/api/emotion/analyze`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ image })
+    });
+
+    if (!response.ok) {
+        throw new Error(`Backend returned ${response.status}`);
+    }
+
+    return await response.json();
+}
+
+async function saveScores(scores) {
+    const response = await fetch(`${API_BASE}/api/emotion/record`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ scores })
+    });
+
+    if (!response.ok) {
+        throw new Error(`Backend returned ${response.status}`);
+    }
+
+    return await response.json();
+}
+
+function readHumanEmotions(rawEmotions = []) {
     const scores = {
         sad: 0,
         happy: 0,
@@ -163,12 +211,19 @@ function readEmotions(rawEmotions = []) {
         calm: 0
     };
 
+    const aliases = {
+        sad: ["sad", "sadness"],
+        happy: ["happy", "joy"],
+        angry: ["angry", "anger"],
+        calm: ["neutral", "calm", "relaxed"]
+    };
+
     rawEmotions.forEach((emotion) => {
         const label = String(emotion.emotion || emotion.name || "").toLowerCase();
         const score = Number(emotion.score || emotion.probability || 0);
 
-        Object.entries(emotionMap).forEach(([key, config]) => {
-            if (config.names.includes(label)) {
+        Object.entries(aliases).forEach(([key, names]) => {
+            if (names.includes(label)) {
                 scores[key] = Math.max(scores[key], score);
             }
         });
@@ -176,6 +231,17 @@ function readEmotions(rawEmotions = []) {
 
     scores.calm = Math.max(scores.calm, 1 - scores.sad - scores.happy - scores.angry);
     return scores;
+}
+
+function captureFrame() {
+    const width = 320;
+    const height = Math.round(width * (video.videoHeight / video.videoWidth || 0.75));
+    snapshot.width = width;
+    snapshot.height = height;
+
+    const context = snapshot.getContext("2d");
+    context.drawImage(video, 0, 0, width, height);
+    return snapshot.toDataURL("image/jpeg", 0.72);
 }
 
 function updateEmotionPanel(scores) {

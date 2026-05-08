@@ -6,7 +6,7 @@
 
     <title>emo-bot</title>
 
-    <link href="style.css" rel="stylesheet">
+    <link href="/style.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/@vladmandic/human/dist/human.js" defer></script>
     <script src="scripts.js" defer></script>
 </head>
@@ -34,12 +34,13 @@
             <div class="intro">
                 <p class="eyebrow">camera emotion interface</p>
                 <h1 id="page-title">Эмоции с камеры, прямо на экране.</h1>
-                <p>Включи доступ к камере, и emo-bot будет показывать настроение в нижней плашке.</p>
+                <p>Включи доступ к камере, и emo-bot определит эмоцию, отправит результат в Python API и сохранит статистику.</p>
             </div>
 
             <section class="camera-block" aria-label="Камера распознавания эмоций">
                 <div class="camera-shell">
                     <video id="camera" autoplay muted playsinline></video>
+                    <canvas id="snapshot" hidden></canvas>
                     <div class="camera-status" id="cameraStatus">запрашиваю камеру</div>
                 </div>
 

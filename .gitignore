@@ -1,4 +1,9 @@
 __pycache__/
 *.py[cod]
 .DS_Store
-
+.env
+.venv/
+venv/
+emobot.db
+database-data/
+node_modules/
