@@ -1,5 +1,8 @@
 # emobot
 
+
+![Описание картинки](maxresdefault.jpg)
+
 Бот распознавания эмоций с видеопотока в режиме реального времени.
 
 Browser camera page that shows a live emotion chart 
