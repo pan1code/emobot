@@ -22,8 +22,8 @@ def config() -> dict:
 
 
 @router.post("/emotion/analyze")
-async def analyze(payload: AnalyzeRequest, db: Session = Depends(get_db)) -> dict:
-    return await analyze_emotion(payload.image, db)
+def analyze(payload: AnalyzeRequest, db: Session = Depends(get_db)) -> dict:
+    return analyze_emotion(payload.image, db)
 
 
 @router.post("/emotion/record")

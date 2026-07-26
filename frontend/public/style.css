@@ -96,25 +96,6 @@ body.theme-macos {
     font-family: Chicago, "Geneva", Monaco, "Courier New", monospace;
 }
 
-body.theme-rus {
-    --bg: #8f8f8f;
-    --text: #222;
-    --muted: #4d4d4d;
-    --accent: #6a6a6a;
-    --line: rgba(0, 0, 0, 0.18);
-    --panel: rgba(180, 180, 180, 0.82);
-    --shadow: none;
-    background: #8f8f8f;
-    overflow: hidden;
-}
-
-body.theme-rus main,
-body.theme-rus footer {
-    filter: grayscale(1);
-    opacity: 0.32;
-    pointer-events: none;
-}
-
 a {
     color: inherit;
     text-decoration: none;
@@ -169,12 +150,6 @@ header {
     background: #fff;
     box-shadow: none;
     backdrop-filter: none;
-}
-
-body.theme-rus header {
-    border-bottom-color: rgba(0, 0, 0, 0.12);
-    background: rgba(150, 150, 150, 0.86);
-    box-shadow: none;
 }
 
 .theme-macos header::before {
@@ -318,18 +293,6 @@ nav a:hover {
 
 .theme-macos .theme-button.is-active {
     background: #000;
-    color: #fff;
-}
-
-.theme-rus .theme-menu {
-    border-color: rgba(0, 0, 0, 0.18);
-    background: rgba(175, 175, 175, 0.94);
-    box-shadow: none;
-}
-
-.theme-rus .theme-menu-button[aria-expanded="true"],
-.theme-rus .theme-button.is-active {
-    background: #606060;
     color: #fff;
 }
 
@@ -623,53 +586,6 @@ footer {
     padding: 0 0 28px;
     color: var(--muted);
     font-size: 13px;
-}
-
-.rus-loader {
-    position: fixed;
-    top: 56px;
-    right: 0;
-    bottom: 0;
-    left: 0;
-    z-index: 6;
-    display: none;
-    place-items: center;
-    padding: 24px;
-    background: rgba(128, 128, 128, 0.92);
-    pointer-events: none;
-}
-
-.theme-rus .rus-loader {
-    display: grid;
-}
-
-.rus-loader-box {
-    display: grid;
-    justify-items: center;
-    width: 148px;
-    height: 148px;
-    padding: 28px;
-    border: 1px solid rgba(0, 0, 0, 0.16);
-    border-radius: 18px;
-    background: #a6a6a6;
-    color: #222;
-    text-align: center;
-    box-shadow: 0 18px 80px rgba(0, 0, 0, 0.18);
-}
-
-.rus-spinner {
-    width: 74px;
-    height: 74px;
-    border: 10px solid #cfcfcf;
-    border-top-color: #4a4a4a;
-    border-radius: 50%;
-    animation: rus-spin 900ms linear infinite;
-}
-
-@keyframes rus-spin {
-    to {
-        transform: rotate(360deg);
-    }
 }
 
 @media (max-width: 860px) {

@@ -154,7 +154,7 @@ async function analyzeEmotion() {
             : `эмоция: ${result.emotion}`;
     } catch (error) {
         console.log("Ошибка анализа эмоций:", error);
-        cameraStatus.textContent = "backend или ml-service недоступен";
+        cameraStatus.textContent = "backend недоступен";
         updateEmotionPanel({ calm: 1 });
     } finally {
         analyzing = false;
@@ -278,13 +278,12 @@ function normalizeScores(scores) {
 }
 
 function setTheme(themeName) {
-    const themes = ["apple", "web20", "emo", "macos", "rus"];
+    const themes = ["apple", "web20", "emo", "macos"];
     const nextTheme = themes.includes(themeName) ? themeName : "apple";
 
     document.body.classList.toggle("theme-web20", nextTheme === "web20");
     document.body.classList.toggle("theme-emo", nextTheme === "emo");
     document.body.classList.toggle("theme-macos", nextTheme === "macos");
-    document.body.classList.toggle("theme-rus", nextTheme === "rus");
     themeButtons.forEach((button) => {
         button.classList.toggle("is-active", button.dataset.theme === nextTheme);
     });

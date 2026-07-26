@@ -39,16 +39,13 @@ docker compose up --build
 ```text
 frontend: http://127.0.0.1:3000
 backend:  http://127.0.0.1:8000
-ml:       http://127.0.0.1:9000
 ```
 
-Postgres доступен контейнерам внутри Docker по адресу:
+Статистика сохраняется в SQLite:
 
 ```text
-database:5432
+database-data/emobot.db
 ```
-
-На Mac порт `5432` специально не открывается, потому что он часто уже занят локальным Postgres.
 
 ## Остановка
 
@@ -56,7 +53,7 @@ database:5432
 docker compose down
 ```
 
-Если нужно удалить локальные данные Postgres:
+Если нужно удалить локальную статистику:
 
 ```bash
 docker compose down

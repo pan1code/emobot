@@ -11,8 +11,7 @@
 ```text
 frontend/       интерфейс: HTML, CSS, немного JavaScript
 backend/        FastAPI backend на Python
-ml-service/     отдельный Python-сервис с моделью эмоций
-database-data/  данные Postgres при Docker-запуске
+database-data/  SQLite-база при Docker-запуске
 docs/           схемы и материалы
 ```
 
@@ -23,26 +22,14 @@ docs/           схемы и материалы
         ↓
 frontend
         ↓
-backend
-        ↓
-ml-service
-        ↓
-backend сохраняет статистику
+backend: API + легкая Python-модель + статистика
         ↓
 frontend показывает результат
 ```
 
 ## Локальный запуск без Docker
 
-Backend и ML-сервис запускаются в двух терминалах.
-
-```bash
-cd ml-service
-python3 -m venv .venv
-source .venv/bin/activate
-pip install -r requirements.txt
-uvicorn predict:app --host 127.0.0.1 --port 9000
-```
+Backend запускается одним Python-процессом.
 
 ```bash
 cd backend
@@ -87,13 +74,13 @@ http://127.0.0.1:8000/api/health
 http://127.0.0.1:8000/api/stats
 ```
 
-Postgres не публикуется на порт Mac, чтобы не конфликтовать с локальной базой. Backend подключается к нему внутри Docker по адресу `database:5432`.
+Статистика хранится в SQLite-файле `database-data/emobot.db`.
 
 ## Где менять модель
 
-Сейчас основной анализ делает браузерная Human.js модель, потому что она заметно лучше временной Python-заглушки. Backend всё равно остается на Python: он принимает результат, сохраняет статистику и отдает API.
+Сейчас основной анализ делает браузерная Human.js модель, потому что она заметно лучше простой Python-заглушки. Backend принимает результат, сохраняет статистику и отдает API.
 
-`ml-service/model.py` содержит простую Python-модель по цветам кадра. Это запасной вариант и место для будущей настоящей нейросети. Когда будет готовая модель, замените функцию `EmotionModel.predict()`, а backend и frontend трогать почти не придется.
+`backend/app/services/model.py` содержит простую Python-модель по цветам кадра. Это запасной вариант и место для будущей настоящей нейросети. Когда будет готовая модель, замените функцию `EmotionModel.predict()`, а frontend трогать не придется.
 
 ## Скорость обновления
 

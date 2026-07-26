@@ -1,10 +1,9 @@
 from typing import Any
 
-import httpx
 from sqlalchemy.orm import Session
 
-from app.config import get_settings
 from app.database.models import EmotionRecord
+from app.services.model import EmotionModel
 
 
 EMOTIONS = {
@@ -19,18 +18,14 @@ THEMES = {
     "web20": "Web 2.0",
     "emo": "Purple-Black",
     "macos": "Macintosh",
-    "rus": "Rus",
 }
 
 
-async def analyze_emotion(image: str, db: Session) -> dict[str, Any]:
-    settings = get_settings()
-    async with httpx.AsyncClient(timeout=10) as client:
-        response = await client.post(f"{settings.ml_service_url}/predict", json={"image": image})
-        response.raise_for_status()
-        prediction = response.json()
+model = EmotionModel()
 
-    return save_emotion_scores(prediction.get("scores", {}), db)
+
+def analyze_emotion(image: str, db: Session) -> dict[str, Any]:
+    return save_emotion_scores(model.predict(image), db)
 
 
 def save_emotion_scores(scores: dict[str, Any], db: Session) -> dict[str, Any]:
