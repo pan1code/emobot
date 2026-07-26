@@ -9,10 +9,12 @@
 ## Структура
 
 ```text
-frontend/       интерфейс: HTML, CSS, немного JavaScript
-backend/        FastAPI backend на Python
-database-data/  SQLite-база при Docker-запуске
-docs/           схемы и материалы
+frontend/          интерфейс: HTML, CSS, немного JavaScript
+backend/           FastAPI backend на Python
+database-data/     SQLite-база при Docker-запуске
+docs/              схемы и материалы
+docker-compose.yml запуск frontend и backend через Docker
+maxresdefault.jpg  изображение для README
 ```
 
 ## Как работает
@@ -91,4 +93,4 @@ const HUMAN_INTERVAL_MS = 650;
 const PYTHON_INTERVAL_MS = 1400;
 ```
 
-Human.js обновляет эмоции примерно раз в `650 ms` плюс время обработки кадра. Python fallback обновляется медленнее — примерно раз в `1400 ms` плюс время HTTP-запроса.
+Human.js обновляет эмоции примерно раз в `650 ms` плюс время обработки кадра. Python fallback обновляется медленнее — примерно раз в `1400 ms` плюс время запроса к backend.
